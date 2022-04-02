@@ -2,7 +2,7 @@
     <header>
         <img @click="goHome" class="logoHome" src="../assets/icon-left-font.svg" alt="groupomania logo"/>
         <nav>
-            <a @click="toggleNotif">Notification</a>
+            <a @click="toggleNotif"><p>Notification</p></a>
             <Teleport to="body">
                 <div v-if="openNotif" class="notif">
                     <nav>
@@ -12,7 +12,9 @@
                     </nav>
                 </div>
             </Teleport>
-            <a @click="toggleProfil">{{this.user.username}}</a>
+            <a @click="toggleProfil" class="ourIconUser">
+                <img :src="this.user.icon_url"/>
+            </a>
             <Teleport to="body">
                 <div v-if="openProfil" class="profil">
                     <nav>
@@ -129,5 +131,8 @@ export default {
     .notif>nav>a{
         font-size: 20px;
         color: white;
+    }
+    nav>a>img{
+        width:120px;
     }
 </style>

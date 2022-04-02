@@ -65,11 +65,11 @@ export default {
         async getComment(){
             let resultsData = await axios.get("http://localhost:3000/comments");
             let results = resultsData.data;
-            results.forEach(result => {
+            results.forEach(async result => {
                 if(result.post_id == this.$route.params.id){
                     result.create_comment_at = moment(result.create_comment_at).format('DD-MM-YYYY hh:mm:ss');
                     result.modified_comment_at = moment(result.modified_comment_at).format('DD-MM-YYYY hh:mm:ss');
-                    let resultUser = axios.get("http://localhost:3000/auth/"+ result.user_id);
+                    let resultUser = await axios.get("http://localhost:3000/auth/"+ result.user_id);
                     result.user_username = resultUser.data[0].username;
                     result.user_icon_url = resultUser.data[0].icon_url;
                     this.comments.push(result);

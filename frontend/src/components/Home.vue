@@ -14,15 +14,14 @@
                 <p class="post_create" >Créé le {{post.create_post_at}}</p>
                 <p v-if="post.modified_post_at !== null && post.modified_post_at !== 'Invalid date'" class="post_modify">Modifié le {{post.modified_post_at}}</p>
             </div>
-            <router-link :to="'/posts/' + post.id">
-                <h3 class="post_title">{{post.post_title}}</h3>
-                <div v-if="post.image_url !== null || post.image_url !== undefined">
-                    <img :src="post.image_url" />
-                </div>
-                <p class="post_body">{{post.post_body}}</p>
-            </router-link>
-            <div v-if="post.user_id == user.id || user.role == 'admin'" class="actionsPost">
-                <button type="button" @click="deletePost(post.id)">Supprimer</button>
+            <div class="fullPost">
+                <router-link :to="'/posts/' + post.id">
+                    <h3 class="post_title">{{post.post_title}}</h3>
+                    <div v-if="post.image_url !== null || post.image_url !== undefined">
+                        <img :src="post.image_url" class="img_post"/>
+                    </div>
+                    <p class="post_body">{{post.post_body}}</p>
+                </router-link>
             </div>
         </div>
     </div>
@@ -96,14 +95,16 @@ export default {
     }
     .user_post{
         cursor: pointer;
+        grid-column: 1/4;
+        grid-row: 1;
     }
     .onePost{
-        background-color: white ;
+        background-color: white;
         display: grid;
         padding: 15px;
         margin-bottom: 20px;
-        grid-template-columns: 1fr 3fr;
-        grid-template-rows: 1fr auto 1fr;
+        grid-template-columns: 1fr;
+        grid-template-rows: 200px 3fr;
         grid-gap: 10px;
         align-items: center;
         border: 2px solid lightcoral;
@@ -127,23 +128,18 @@ export default {
         grid-row: 2;
     }
     .iconUser{
-        width: 50px;
-        border-radius: 50%;
-    }
-    .actionsPost button{
-        grid-column: 1;
-        grid-row: 3;
         width: 100px;
-        background-color: lightcoral;
-        border: 1px solid lightcoral;
-        border-radius: 5px;
-        color: white;
-        height: 25px;
-        margin: 5px 0;
-        cursor: pointer;
+        border-radius: 50%;
     }
     #posts a{
         text-decoration: none;
         color: black;
+    }
+    .img_post{
+        max-width: 400px;
+    }
+    .fullPost{
+        grid-column: 1/4;
+        grid-row: 2/4;
     }
 </style>

@@ -78,17 +78,17 @@ exports.deleteUser = (req, res, next) => {
   try {
     const user = new User();
     console.log(user);
-    const filename = req.file.filename;
+    /* const filename = req.file.filename;
     console.log(filename);
-    fs.unlink(`images/${filename}`, () => {
-      user
-        .delete(req.params.id)
-        .then(() => res.status(200).json({ message: "Utilisateur supprimé !" }))
-        .catch((error) => {
-          console.log(error);
-          res.status(400).json({ error });
-        });
-    });
+    fs.unlink(`images/${filename}`, () => { */
+    user
+      .delete(req.params.id)
+      .then(() => res.status(200).json({ message: "Utilisateur supprimé !" }))
+      .catch((error) => {
+        console.log(error);
+        res.status(400).json({ error });
+      });
+    /* }); */
   } catch (error) {
     console.log(error);
     res.status(500).json({ error });

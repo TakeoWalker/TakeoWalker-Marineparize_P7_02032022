@@ -79,8 +79,6 @@ export default {
             const result = await axios.delete("http://localhost:3000/posts/" + this.$route.params.id);
             if (result.status == 200){
                 console.log("Votre post a été supprimé");
-                this.post = [];
-                this.getPost();
                 this.$router.push({name: "Home"})
             }
         },

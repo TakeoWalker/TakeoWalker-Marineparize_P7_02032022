@@ -4,7 +4,8 @@
         <form class="addForm">
             <input type="text" name="title" placeholder="Mettez un titre" v-model="post.title"/>
             <input type="text" name="body" placeholder="Ecrivez votre post" v-model="post.body"/>
-            <input type="file" @change="upload" />
+            <p>Voulez vous rajouter une image ?</p>
+            <input type="file" id="imageClass" @change="upload" />
             <button type="button" @click="addPost"> Publier </button>
         </form>
     </div>
@@ -50,8 +51,7 @@ export default {
             }
         },
         upload(event){
-            this.file = event.target.files[0];
-
+                    this.file = event.target.files[0]
         }
     }
 }
@@ -83,8 +83,13 @@ export default {
         width: 100%;
         height: 40px;
         border: 1px solid lightcoral;
-        background: lightblue;
+        background: beige;
         cursor: pointer;
         padding: 0 20px;
+        border-radius: 5px;
+    }
+    #imageClass{
+        border: 1px solid beige;
+        padding: 20px;  
     }
 </style>
