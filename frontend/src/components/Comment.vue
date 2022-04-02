@@ -9,8 +9,13 @@
             <h4>Tous les commentaires</h4>
             <div v-for="comment in comments" :key="comment.id" class="oneComment">
                     <div class="user_comment">
-                        <img src="../assets/defaultIcon.png" alt="default icon" class="iconUser"/>
-                        {{user.username}}
+                <div v-if="comment.user_icon_url !== '../assets/defaultIcon.png'">
+                    <img :src="comment.user_icon_url" alt="icon" class="iconUser"/>
+                </div>
+                <div v-else>
+                    <img src="../assets/defaultIcon.png" alt="icon" class="iconUser"/>
+                </div>                
+                        {{comment.user_username}}
                     </div>
                     <p class="comment_body">{{comment.comment_body}}</p>
                     <p class="comment_create">Publié le {{comment.create_comment_at}}</p>
@@ -33,7 +38,7 @@ export default {
             comment : {
                 body:''
             },
-            comments :[]
+            comments :[],
         }
     },
     computed:{
@@ -64,6 +69,9 @@ export default {
                 if(result.post_id == this.$route.params.id){
                     result.create_comment_at = moment(result.create_comment_at).format('DD-MM-YYYY hh:mm:ss');
                     result.modified_comment_at = moment(result.modified_comment_at).format('DD-MM-YYYY hh:mm:ss');
+                    let resultUser = axios.get("http://localhost:3000/auth/"+ result.user_id);
+                    result.user_username = resultUser.data[0].username;
+                    result.user_icon_url = resultUser.data[0].icon_url;
                     this.comments.push(result);
                 }
             });

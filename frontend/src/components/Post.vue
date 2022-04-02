@@ -3,11 +3,17 @@
     <div v-if="modify==false">
         <div class="post" :key="this.$route.params.id">
             <div class="user_post" @click="goProfil" >
-                <img src="../assets/defaultIcon.png" alt="default icon" class="iconUser"/>
+                <div v-if="userPost.icon_url !== '../assets/defaultIcon.png'">
+                    <img :src="userPost.icon_url" alt="icon" class="iconUser"/>
+                </div>
+                <div v-else>
+                    <img src="../assets/defaultIcon.png" alt="icon" class="iconUser"/>
+                </div>                
                 {{userPost.username}}
                 <p class="post_create">Publié le {{post.create_post_at}}</p>
             </div>
             <h3 class="post_title">{{post.post_title}}</h3>
+            <img :src="post.image_url" v-if="post.image_url"/>
             <p class="post_body">{{post.post_body}}</p>
             <p v-if="post.modified_post_at !== null && post.modified_post_at !== 'Invalid date'" class="post_modify">Modifié le {{post.modified_post_at}}</p>
             <div v-if="post.user_id == user.id || user.role == 'admin'" class="actionsPost">
@@ -25,6 +31,7 @@
             </div>
             <input class="post_title" v-model="post.post_title"/>
             <input class="post_body" v-model="post.post_body" />
+            <input type="file" @change="upload">
                 <button type="button" @click="updatePost">Publier</button>
         </div>   
     </div>
@@ -45,6 +52,7 @@ export default {
     data() {
         return{
             post: [],
+            file: null,
             userPost: [],
             modify: false
         }
@@ -79,11 +87,22 @@ export default {
         goProfil(){
             this.$router.push("/users/"+ this.userPost.id);
         },
+        upload(e){
+            this.file = e.target.files[0];
+        },
         async updatePost(){
-            const result = await axios.put("http://localhost:3000/posts/" + this.$route.params.id, {
-                title: this.post.post_title,
-                body: this.post.post_body
-            });
+            const formdata = new FormData();
+            formdata.append("image", this.file);
+            formdata.append(
+                "post",
+                JSON.stringify({
+                    user_id: this.user.id,
+                    title: this.post.post_title,
+                    body: this.post.post_body,
+                    image_url: this.post.image_url
+                })
+            );
+            const result = await axios.put("http://localhost:3000/posts/" + this.$route.params.id, formdata);
             if (result.status == 201){
                 console.log("Votre post a été modifié");
                 this.modifyPost();

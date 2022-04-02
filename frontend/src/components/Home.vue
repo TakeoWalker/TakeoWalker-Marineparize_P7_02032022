@@ -4,13 +4,21 @@
     <div id="posts">
         <div v-for="post in posts" :key="post.id" class="onePost">
             <div class="user_post" @click="goProfil(post.user_id)">
-                <img src="../assets/defaultIcon.png" alt="default icon" class="iconUser"/>
+                <div v-if="post.user_icon_url !== '../assets/defaultIcon.png'">
+                    <img :src="post.user_icon_url" alt="icon" class="iconUser"/>
+                </div>
+                <div v-else>
+                    <img src="../assets/defaultIcon.png" alt="icon" class="iconUser"/>
+                </div>
                 {{post.user_username}}
                 <p class="post_create" >Créé le {{post.create_post_at}}</p>
                 <p v-if="post.modified_post_at !== null && post.modified_post_at !== 'Invalid date'" class="post_modify">Modifié le {{post.modified_post_at}}</p>
             </div>
             <router-link :to="'/posts/' + post.id">
                 <h3 class="post_title">{{post.post_title}}</h3>
+                <div v-if="post.image_url !== null || post.image_url !== undefined">
+                    <img :src="post.image_url" />
+                </div>
                 <p class="post_body">{{post.post_body}}</p>
             </router-link>
             <div v-if="post.user_id == user.id || user.role == 'admin'" class="actionsPost">
@@ -55,6 +63,7 @@ export default {
                 result.modified_post_at = moment(result.modified_post_at).format('DD-MM-YYYY hh:mm:ss');
                 let resultUser = await axios.get("http://localhost:3000/auth/"+ result.user_id);
                 result.user_username = resultUser.data[0].username;
+                    result.user_icon_url = resultUser.data[0].icon_url;
                 this.posts.push(result);
             });
         },

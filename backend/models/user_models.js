@@ -57,28 +57,19 @@ class User {
     DELETE FROM user
     WHERE id = '${userId}'`;
     return await db.execute(sql);
-
-    /* let sql = `
-    SELECT *
-    FROM user
-    INNER JOIN posts ON '${userId}' = posts.user_id
-    INNER JOIN comments ON '${userId}' = comments.user_id;`;
-    
-    return await db.execute(sql);*/
   }
 
-  async update(id) {
+  async update(id, image) {
     let sql = `
     UPDATE user
     SET
       username = '${this.username}',
       email = '${this.email}',
+      icon_url = '${image}'
     WHERE
-      id = '${id}';
-    `;
+      id = '${id}';`;
 
     return await db.execute(sql);
   }
 }
-
 module.exports = User;

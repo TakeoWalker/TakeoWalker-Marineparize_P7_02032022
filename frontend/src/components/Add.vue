@@ -4,6 +4,7 @@
         <form class="addForm">
             <input type="text" name="title" placeholder="Mettez un titre" v-model="post.title"/>
             <input type="text" name="body" placeholder="Ecrivez votre post" v-model="post.body"/>
+            <input type="file" @change="upload" />
             <button type="button" @click="addPost"> Publier </button>
         </form>
     </div>
@@ -18,7 +19,8 @@ export default {
                 userId:'',
                 title: '',
                 body:''
-            }
+            },
+            file: null
         }
     },
     computed:{
@@ -28,15 +30,28 @@ export default {
     },
     methods:{
         async addPost(){
-            const result = await axios.post("http://localhost:3000/posts", {
-                user_id: this.user.id,
-                title: this.post.title,
-                body: this.post.body
-            });
+            const formdata = new FormData();
+            if(this.file){
+                formdata.append("image", this.file);
+            }
+            formdata.append(
+                "post",
+                JSON.stringify({
+                    user_id: this.user.id,
+                    title: this.post.title,
+                    body: this.post.body
+                })
+            );
+            console.log(formdata)
+            const result = await axios.post("http://localhost:3000/posts", formdata);
             if (result.status == 201){
                 console.log("Votre post a été créé");
                 this.$emit("addPost")
             }
+        },
+        upload(event){
+            this.file = event.target.files[0];
+
         }
     }
 }

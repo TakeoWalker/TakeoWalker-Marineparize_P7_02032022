@@ -8,12 +8,12 @@ const postControllers = require("../controllers/post_controllers");
 router
   .route("/")
   .get(auth, postControllers.getAllPosts)
-  .post(auth, postControllers.createNewPost);
+  .post(auth, multer, postControllers.createNewPost);
 
 router
   .route("/:id")
   .get(auth, postControllers.getOnePost)
-  .put(auth, postControllers.modifyPost)
+  .put(auth, multer, postControllers.modifyPost)
   .delete(auth, postControllers.deletePost);
 
 module.exports = router;

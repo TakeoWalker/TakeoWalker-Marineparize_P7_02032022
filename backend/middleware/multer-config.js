@@ -1,6 +1,5 @@
 const multer = require("multer");
 
-// Création d'une variable pour déterminer les types de fichier pris en compte
 const MIME_TYPES = {
   "image/jpg": "jpg",
   "image/jpeg": "jpg",
@@ -8,6 +7,7 @@ const MIME_TYPES = {
   "image/gif": "gif",
 };
 
+//logique pour les stockage telechargement de fichier
 const storage = multer.diskStorage({
   destination: (req, file, callback) => {
     callback(null, "images");
@@ -19,21 +19,4 @@ const storage = multer.diskStorage({
   },
 });
 
-const uploadAvatar = multer({
-  storage: storage,
-  fileFilter: (req, file, callback) => {
-    if (
-      file.mimetype === "image/jpeg" ||
-      file.mimetype === "image/jpg" ||
-      file.mimetype === "image/png" ||
-      file.mimetype === "image/gif"
-    ) {
-      callback(null, true);
-    } else {
-      cb(null, false);
-      req.fileError = "File Format is nos valid";
-    }
-  },
-});
-
-module.exports = uploadAvatar.single("image");
+module.exports = multer({ storage: storage }).single("image");

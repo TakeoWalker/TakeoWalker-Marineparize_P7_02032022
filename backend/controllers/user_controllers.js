@@ -1,6 +1,7 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const db = require("../config/db");
+const fs = require("fs");
 
 const User = require("../models/user_models");
 
@@ -75,18 +76,19 @@ exports.displayUser = (req, res, next) => {
 
 exports.deleteUser = (req, res, next) => {
   try {
-    /* const filename = post.imageUrl.split("/images/")[1];
-      fs.unlink(`images/${filename}`, () => { */
-    /* console.log(req); */
     const user = new User();
-    user
-      .delete(req.params.id)
-      .then(() => res.status(200).json({ message: "Utilisateur supprimé !" }))
-      .catch((error) => {
-        console.log(error);
-        res.status(400).json({ error });
-      });
-    /* }); */
+    console.log(user);
+    const filename = req.file.filename;
+    console.log(filename);
+    fs.unlink(`images/${filename}`, () => {
+      user
+        .delete(req.params.id)
+        .then(() => res.status(200).json({ message: "Utilisateur supprimé !" }))
+        .catch((error) => {
+          console.log(error);
+          res.status(400).json({ error });
+        });
+    });
   } catch (error) {
     console.log(error);
     res.status(500).json({ error });
@@ -95,23 +97,25 @@ exports.deleteUser = (req, res, next) => {
 
 exports.updateUser = async (req, res, next) => {
   try {
-    const user_username = req.body.username;
-    const user_email = req.body.email;
-    if (req.body.imageUrl == undefined) {
-      let user = new User(user_username, user_email);
-      user = await user.update(req.params.id);
+    let user = JSON.parse(req.body.user);
+    console.log(user.username);
+    let imageUrl = user.image_url;
+    const username = user.username;
+    const email = user.email;
+    if (!req.file) {
+      let user = new User(username, email);
+      user = await user.update(req.params.id, imageUrl);
       res.status(201).json({
-        message: "User modifié !",
+        message: "Utilisateur modifié !",
       });
     } else {
-      let user = new User(user_username, user_email, {
-        imageUrl: `${req.protocol}://${req.get("host")}/images/${
-          req.file.filename
-        }`,
-      });
-      user = await user.updateOne(req.params.id);
+      imageUrl = `${req.protocol}://${req.get("host")}/images/${
+        req.file.filename
+      }`;
+      let user = new User(username, email);
+      user = await user.update(req.params.id, imageUrl);
       res.status(201).json({
-        message: "User modifié !",
+        message: "Utilisateur modifié !",
       });
     }
   } catch (error) {

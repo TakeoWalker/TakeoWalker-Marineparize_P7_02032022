@@ -5,22 +5,23 @@ const jwt = require("jsonwebtoken");
 // Création d'un post
 exports.createNewPost = async (req, res, next) => {
   try {
-    const userId = req.body.user_id;
-    const postObject_title = req.body.title;
-    const postObject_body = req.body.body;
-    if (req.body.imageUrl == undefined) {
-      let post = new Post(postObject_title, postObject_body);
+    let post = JSON.parse(req.body.post);
+    let imageUrl = null;
+    const userId = post.user_id;
+    const postObject_title = post.title;
+    const postObject_body = post.body;
+    if (!req.file) {
+      let post = new Post(postObject_title, postObject_body, imageUrl);
 
       post = await post.create(userId);
       res.status(201).json({
         message: "Post enregistré !",
       });
     } else {
-      let post = new Post(postObject_title, postObject_body, {
-        imageUrl: `${req.protocol}://${req.get("host")}/images/${
-          req.file.filename
-        }`,
-      });
+      imageUrl = `${req.protocol}://${req.get("host")}/images/${
+        req.file.filename
+      }`;
+      let post = new Post(postObject_title, postObject_body, imageUrl);
       post = await post.create(userId);
       res.status(201).json({
         message: "Post enregistré !",
@@ -50,28 +51,22 @@ exports.getOnePost = (req, res, next) => {
 // Modification d'un post
 exports.modifyPost = async (req, res, next) => {
   try {
-    const userId = req.body.user_id;
-    const postObject_title = req.body.title;
-    const postObject_body = req.body.body;
-    if (req.body.imageUrl == undefined) {
-      let post = new Post(
-        postObject_title,
-        postObject_body /* {
-        imageUrl: `${req.protocol}://${req.get("host")}/images/${
-          req.file.filename
-        }`,
-      } */
-      );
+    let post = JSON.parse(req.body.post);
+    let imageUrl = post.image_url;
+    const userId = post.user_id;
+    const postObject_title = post.title;
+    const postObject_body = post.body;
+    if (!req.file) {
+      let post = new Post(postObject_title, postObject_body, imageUrl);
       post = await post.updateOne(req.params.id);
       res.status(201).json({
         message: "Post modifié !",
       });
     } else {
-      let post = new Post(postObject_title, postObject_body, {
-        imageUrl: `${req.protocol}://${req.get("host")}/images/${
-          req.file.filename
-        }`,
-      });
+      imageUrl = `${req.protocol}://${req.get("host")}/images/${
+        req.file.filename
+      }`;
+      let post = new Post(postObject_title, postObject_body, imageUrl);
       post = await post.updateOne(req.params.id);
       res.status(201).json({
         message: "Post modifié !",
@@ -89,16 +84,16 @@ exports.modifyPost = async (req, res, next) => {
 exports.deletePost = (req, res, next) => {
   try {
     const post = new Post();
-    /* const filename = post.imageUrl.split("/images/")[1];
-      fs.unlink(`images/${filename}`, () => { */
-    post
-      .delete(req.params.id)
-      .then(() => res.status(200).json({ message: "Objet supprimé !" }))
-      .catch((error) => {
-        console.log(error);
-        res.status(400).json({ error });
-      });
-    /* }); */
+    const filename = post.image.split("/images/")[1];
+    fs.unlink(`images/${filename}`, () => {
+      post
+        .delete(req.params.id)
+        .then(() => res.status(200).json({ message: "Objet supprimé !" }))
+        .catch((error) => {
+          console.log(error);
+          res.status(400).json({ error });
+        });
+    });
   } catch (error) {
     console.log(error);
     res.status(500).json({ error });

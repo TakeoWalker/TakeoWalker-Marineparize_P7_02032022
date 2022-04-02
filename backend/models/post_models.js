@@ -1,9 +1,10 @@
 const db = require("../config/db");
 
 class Post {
-  constructor(title, body) {
+  constructor(title, body, image) {
     this.title = title;
     this.body = body;
+    this.image = image;
   }
 
   async create(userId) {
@@ -22,13 +23,15 @@ class Post {
         user_id,
         post_title,
         post_body,
-        create_post_at
+        create_post_at,
+        image_url
     )
     VALUES(
         '${userId}',
         '${this.title}',
         '${this.body}',
-        '${createAtDate}' 
+        '${createAtDate}',
+        '${this.image}'
     )
     `;
 
@@ -63,7 +66,8 @@ class Post {
     SET
       post_title = '${this.title}',
       post_body = '${this.body}',
-      modified_post_at = '${modifiedAtDate}'
+      modified_post_at = '${modifiedAtDate}',
+      image_url = '${this.image}'
     WHERE
       id = '${id}';
     `;

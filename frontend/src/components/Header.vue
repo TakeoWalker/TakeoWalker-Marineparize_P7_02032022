@@ -12,7 +12,7 @@
                     </nav>
                 </div>
             </Teleport>
-            <a @click="toggleProfil">Profil</a>
+            <a @click="toggleProfil">{{this.user.username}}</a>
             <Teleport to="body">
                 <div v-if="openProfil" class="profil">
                     <nav>
