@@ -2,25 +2,27 @@
     <Header />
     <Add @addPost="createPost()"/>
     <div id="posts">
-        <div v-for="post in posts" :key="post.id" class="onePost">
-            <div class="user_post" @click="goProfil(post.user_id)">
-                <div v-if="post.user_icon_url !== '../assets/defaultIcon.png'">
-                    <img :src="post.user_icon_url" alt="icon" class="iconUser"/>
+        <div v-for="post in posts" :key="post.id" class="onePosts">
+            <div class="user_posts" @click="goProfil(post.user_id)">
+                <div v-if="post.user_icon_url !== '../assets/defaultIcon.png'" class="class_Icon">
+                    <img :src="post.user_icon_url" alt="icon" class="icon_User"/>
                 </div>
-                <div v-else>
-                    <img src="../assets/defaultIcon.png" alt="icon" class="iconUser"/>
+                <div v-else class="class_Icon">
+                    <img src="../assets/defaultIcon.png" alt="icon" class="icon_User"/>
                 </div>
-                {{post.user_username}}
-                <p class="post_create" >Créé le {{post.create_post_at}}</p>
-                <p v-if="post.modified_post_at !== null && post.modified_post_at !== 'Invalid date'" class="post_modify">Modifié le {{post.modified_post_at}}</p>
+                <div>
+                    <h3>{{post.user_username}}</h3>
+                    <p class="posts_create" >Créé le {{post.create_post_at}}</p>
+                    <p v-if="post.modified_post_at !== null && post.modified_post_at !== 'Invalid date'" class="posts_modify">Modifié le {{post.modified_post_at}}</p>
+                </div>
             </div>
-            <div class="fullPost">
+            <div class="fullPosts">
                 <router-link :to="'/posts/' + post.id">
-                    <h3 class="post_title">{{post.post_title}}</h3>
+                    <h3 class="posts_title">{{post.post_title}}</h3>
                     <div v-if="post.image_url !== null || post.image_url !== undefined">
-                        <img :src="post.image_url" class="img_post"/>
+                        <img :src="post.image_url" class="img_posts"/>
                     </div>
-                    <p class="post_body">{{post.post_body}}</p>
+                    <p class="posts_body">{{post.post_body}}</p>
                 </router-link>
             </div>
         </div>
@@ -93,53 +95,68 @@ export default {
         margin-left: auto;
         margin-right: auto;
     }
-    .user_post{
+    .user_posts{
         cursor: pointer;
         grid-column: 1/4;
-        grid-row: 1;
-    }
-    .onePost{
-        background-color: white;
-        display: grid;
-        padding: 15px;
+        border: 3px solid beige;
+        border-radius: 25px 25px 0 0;
+        width: 100%;
         margin-bottom: 20px;
-        grid-template-columns: 1fr;
-        grid-template-rows: 200px 3fr;
-        grid-gap: 10px;
+    }
+    .onePosts{
+        background-color: lightcoral;
+        display: flex;
+        padding: 15px;
+        margin: 135px 0;
         align-items: center;
         border: 2px solid lightcoral;
         border-radius: 25px;
+        flex-direction: column;
     }
-    .post_title{
-        border-bottom: 1px solid lightcoral;
+    .posts_title{
+        border-bottom: 1px solid beige;
         padding-bottom: 14px;
         margin-left: 30px;
         margin-right: 30px;
     }
-    .post_body{
+    .posts_body{
         grid-column: 2/3;
         grid-row: 2/4;  
         justify-self: baseline;
         align-self: baseline;
         padding: 0 2em; 
     }
-    .post_create, .post_modify{
+    .posts_create, .posts_modify{
         grid-column: 1;
         grid-row: 2;
     }
-    .iconUser{
-        width: 100px;
+    .icon_User{
+        width: 150px;
         border-radius: 50%;
+        margin-bottom: 20px;
     }
     #posts a{
         text-decoration: none;
         color: black;
     }
-    .img_post{
-        max-width: 400px;
+    .img_posts{
+        max-width: 340px;
     }
-    .fullPost{
+    .fullPosts{
         grid-column: 1/4;
         grid-row: 2/4;
+        border: 3px solid beige;
+        border-radius: 0 0 25px 25px;
+        width: 100%;
+    }
+    .class_Icon{
+        height: 40px;
+        position: relative;
+        bottom: 100px;
+    }
+    @media screen and (max-width: 750px){
+        #posts{
+            width: 100%;
+        }
     }
 </style>

@@ -82,44 +82,12 @@ exports.modifyPost = async (req, res, next) => {
 
 // Suppression d'un post
 exports.deletePost = (req, res, next) => {
-  try {
-    Post.findOne(req.params.id)
-      .then(async (post) => {
-        const postInfo = post[0][0];
-        if (postInfo.image_url !== null && postInfo.image_url !== undefined) {
-          const filename = postInfo.image_url.split("/images/")[1];
-          fs.unlink(`images/${filename}`);
-        }
-        await postInfo
-          .delete(req.params.id)
-          .then(() => res.status(200).json({ message: "Objet supprimé !" }))
-          .catch((error) => {
-            console.log(error);
-            res.status(400).json({ error });
-          });
-      })
-      .catch((err) => {
-        res
-          .status(404)
-          .json({ error: err, message: "Post à supprimé introuvable" });
-      });
-    /* const post = new Post(req);
-    console.log(post);
-    if (post.image) {
-      const filename = post.image.split("/images/")[1];
-      fs.unlink(`images/${filename}`);
-    }
-    await post
-      .delete(req.params.id)
-      .then(() => res.status(200).json({ message: "Objet supprimé !" }))
-      .catch((error) => {
-        console.log(error);
-        res.status(400).json({ error });
-      }); */
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ error });
-  }
+  Post.delete(req.params.id)
+    .then(() => res.status(200).json({ message: "Objet supprimé !" }))
+    .catch((error) => {
+      console.log(error);
+      res.status(400).json({ error });
+    });
 };
 
 // Reprendre la liste de tous les posts créés

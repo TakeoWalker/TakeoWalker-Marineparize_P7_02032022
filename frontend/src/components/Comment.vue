@@ -1,28 +1,32 @@
 <template>
     <div class="commentSection">
         <form class="commentAdded">
-            <input type="text" name="body" placeholder="Ecrivez votre commentaire" v-model="comment.body"/>
+            <textarea rows="10" cols="50" name="body" placeholder="Ecrivez votre commentaire" v-model="comment.body"/>
             <button type="button" @click="addComment"> Publier </button>
         </form>
 
         <div class="allComments">
             <h4>Tous les commentaires</h4>
             <div v-for="comment in comments" :key="comment.id" class="oneComment">
-                    <div class="user_comment">
-                <div v-if="comment.user_icon_url !== '../assets/defaultIcon.png'">
-                    <img :src="comment.user_icon_url" alt="icon" class="iconUser"/>
-                </div>
-                <div v-else>
-                    <img src="../assets/defaultIcon.png" alt="icon" class="iconUser"/>
-                </div>                
+                <div class="user_comment">
+                    <div v-if="comment.user_icon_url !== '../assets/defaultIcon.png'">
+                        <img :src="comment.user_icon_url" alt="icon" class="iconUser iconUserComment"/>
+                    </div>
+                    <div v-else>
+                        <img src="../assets/defaultIcon.png" alt="icon" class="iconUser iconUserComment"/>
+                    </div>
+                    <div class="user_other">
                         {{comment.user_username}}
-                    </div>
-                    <p class="comment_body">{{comment.comment_body}}</p>
-                    <p class="comment_create">Publié le {{comment.create_comment_at}}</p>
-                    <p v-if="comment.modified_comment_at !== null && comment.modified_comment_at !== 'Invalid date'" class="comment_modify">Modifié le {{comment.modified_comment_at}}</p>
-                    <div v-if="comment.user_id == user.id || user.role == 'admin'" class="actionsComment">
-                        <button type="button" class="commentDelete" @click="deleteComment(comment.id)">Supprimer</button>
-                    </div>
+                        <p class="comment_create">Publié le {{comment.create_comment_at}}</p>
+                        <p v-if="comment.modified_comment_at !== null && comment.modified_comment_at !== 'Invalid date'" class="comment_modify">Modifié le {{comment.modified_comment_at}}</p>
+                        <div v-if="comment.user_id == user.id || user.role == 'admin'" class="actionsComment">
+                            <button type="button" class="commentDelete" @click="deleteComment(comment.id)">Supprimer</button>
+                        </div>
+                    </div>             
+                </div>
+                <div>
+                    <p class="comment_body">{{comment.comment_body}}</p>   
+                </div>
             </div>   
         </div>    
     </div>
@@ -100,17 +104,49 @@ export default {
         margin-right: auto;
         margin-bottom: 20px;
     }
+    .allComments{
+        margin-top: 30px;
+        border-top: 8px solid lightcoral;
+        border-radius: 20px;    
+    }
+    @media screen and (max-width: 750px){
+        .commentSection{
+            width: 100%;
+        }
+        .user_comment{
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid lightcoral;
+            padding-bottom: 5px;
+        }
+        .iconUserComment {
+            margin-right: 20px;
+        }
+        .oneComment{
+            display: flex;
+            flex-direction: column;
+            border-right: none !important;
+            border-left: none !important;
+        }
+        .allComments{
+            width: 100%;
+        }
+        .commentAdded textarea {
+            padding: 14px !important;  
+        }
+    }
     .commentAdded{
-        border: 2px solid lightcoral;
         height: 250px;
         border-radius: 25px;
     }
-    .commentAdded input{
+    .commentAdded textarea{
+        padding: 20px;
         margin-top: 10px;
-        height: 200px;
+        height: 150px;
         border-radius: 25px;
-        width:95%;
-        border: 1px solid lightcoral;
+        width:90%;
+        border: 3px solid lightcoral;
+        font-family: Arial, Helvetica, sans-serif;
     }
     .commentAdded button {
         margin-top: 5px;
@@ -118,16 +154,14 @@ export default {
         border-radius : 5px;
         border: 1px solid lightcoral;
         color: white;
-        padding: 5px;
+        padding: 15px;
     }
     .oneComment{
         border: 2px solid lightcoral;
-        display: grid;
+        display: flex;
         padding: 15px;
         margin-bottom: 20px;
         border-radius: 25px;
-        grid-template-columns: 1fr 3fr;
-        grid-template-rows: 1fr 2fr;
     }
     .commentDelete{
         cursor: pointer;
@@ -137,12 +171,7 @@ export default {
         padding: 5px;
         border-radius: 5px;
     }
-    .actionsComment{
-        grid-column: 1;
-        grid-row: 3;
-    }
     .comment_body{
-        grid-column: 2;
-        grid-row: 1/4;
+        padding: 20px;
     }
 </style>

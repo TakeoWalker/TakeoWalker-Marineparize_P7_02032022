@@ -1,39 +1,41 @@
 <template>
     <Header />
-    <div v-if="modify==false">
-        <div class="post" :key="this.$route.params.id">
-            <div class="user_post" @click="goProfil" >
-                <div v-if="userPost.icon_url !== '../assets/defaultIcon.png'">
-                    <img :src="userPost.icon_url" alt="icon" class="iconUser"/>
-                </div>
-                <div v-else>
-                    <img src="../assets/defaultIcon.png" alt="icon" class="iconUser"/>
-                </div>                
-                {{userPost.username}}
-                <p class="post_create">Publié le {{post.create_post_at}}</p>
+    <div class="post" :key="this.$route.params.id">
+        <div class="user_post" @click="goProfil" >
+            <div v-if="userPost.icon_url !== '../assets/defaultIcon.png'">
+                <img :src="userPost.icon_url" alt="icon" class="iconUser"/>
             </div>
-            <h3 class="post_title">{{post.post_title}}</h3>
-            <img :src="post.image_url" v-if="post.image_url"/>
-            <p class="post_body">{{post.post_body}}</p>
-            <p v-if="post.modified_post_at !== null && post.modified_post_at !== 'Invalid date'" class="post_modify">Modifié le {{post.modified_post_at}}</p>
+            <div v-else>
+                <img src="../assets/defaultIcon.png" alt="icon" class="iconUser"/>
+            </div>                
+            {{userPost.username}}
+            <p class="post_create">Publié le {{post.create_post_at}}</p>
+            <p v-if="post.modified_post_at !== null && post.modified_post_at !== 'Invalid date'" class="post_date_modify">Modifié le {{post.modified_post_at}}</p>
+        </div>
+        <div v-if="modify==false">
+            <div class="full_post">
+                <h3 class="post_title">{{post.post_title}}</h3>
+                <div class="content-img">
+                    <img :src="post.image_url" v-if="post.image_url"/>
+                </div>
+                <p class="post_body">{{post.post_body}}</p>
+            </div>
             <div v-if="post.user_id == user.id || user.role == 'admin'" class="actionsPost">
                 <button type="button" @click="modifyPost">Modifier</button>
                 <button type="button" @click="deletePost">Supprimer</button>
             </div>
         </div>
-    </div>
-    <div v-else>
-        <div class="post" :key="this.$route.params.id">
-            <div class="user_post">
-                <img src="../assets/defaultIcon.png" alt="default icon" class="iconUser"/>
-                {{userPost.username}}
-                <p class="post_create">Publié le {{post.create_post_at}}</p>
+        <div v-else >
+            <div class="post_modify">
+                <input class="post_title_modify" v-model="post.post_title"/>
+                <input class="post_body_modify" v-model="post.post_body" />
+                <input class="post_file_modify" type="file" @change="upload">
+                <div class="actions_modify">
+                    <button type="button" @click="updatePost">Publier</button> 
+                    <button type="button" @click="modifyPost">Annuler</button> 
+                </div>
             </div>
-            <input class="post_title" v-model="post.post_title"/>
-            <input class="post_body" v-model="post.post_body" />
-            <input type="file" @change="upload">
-                <button type="button" @click="updatePost">Publier</button>
-        </div>   
+        </div>
     </div>
     <Comment />
 </template>
@@ -121,8 +123,7 @@ export default {
         display: block;
         margin-left: auto;
         margin-right: auto;
-        background-color: white ;
-        display: grid;
+        background-color: lightcoral ;
         padding: 15px;
         margin-bottom: 20px;
         grid-template-columns: 1fr 3fr;
@@ -132,12 +133,55 @@ export default {
         border: 2px solid lightcoral;
         border-radius: 25px;
     }
+    .post_modify{
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    .post_title_modify, .post_body_modify{
+        width: 92%;
+        height: 40px;
+        padding-left: 20px;
+        display: block;
+        margin-bottom: 20px;
+        border: 1px solid lightcoral;
+    }
+    .full_post{
+        border: 3px solid beige;
+        border-radius: 0 0 25px 25px;
+        margin: 20px 0;
+    }
+    @media screen and (max-width: 750px){
+        .post{
+            width: 100%;
+            padding: 25px 0;
+        }
+        .content-img img{
+            max-height: 500px;
+            max-width: 335px;
+        }
+        .full_post{
+            border-bottom: 3px solid beige;
+            border-top: 3px solid beige;
+            border-right: none;
+            border-left: none; 
+        }
+        .user_post{
+            border-right: none !important;
+            border-left: none !important;     
+        }
+    }
+    .content-img img{
+        max-height: 500px;
+    }
     .user_post{
-        border-right: 1px solid lightcoral;
-        border-bottom: 1px solid lightcoral;
+        padding-top: 20px;
+        border: 3px solid beige;
+        border-radius: 25px 25px 0 0;
     }
     .post_title{
-        border-bottom: 1px solid lightcoral;
+        border-bottom: 1px solid beige;
         padding-bottom: 14px;
         margin-left: 30px;
         margin-right: 30px;
@@ -149,26 +193,26 @@ export default {
         align-self: baseline;
         padding: 0 2em; 
     }
-    .post_create, .post_modify{
-        grid-column: 1;
-        grid-row: 2;
+    .post_create, .post_date_modify{
+        font-size: 15px;
     }
     .iconUser{
         width: 50px;
         border-radius: 50%;
     }
-    .actionsPost button{
+    .post_file_modify{
+        border: 1px solid beige;
+        padding: 20px;  
+    }
+    .actionsPost button, .post_modify button{
         grid-column: 1;
         grid-row: 3;
         width: 100px;
-        background-color: lightcoral;
-        border: 1px solid lightcoral;
+        background-color: beige;
+        border: 1px solid beige;
         border-radius: 5px;
-        color: white;
+        color: black;
         height: 25px;
-        margin: 5px 0;
-    }
-    .post_create{
-        font-size: 15px;
+        margin: 10px;
     }
 </style>

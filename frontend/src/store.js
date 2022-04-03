@@ -39,6 +39,11 @@ export default createStore({
       });
     },
   },
+  mutations: {
+    setUser(state, payload) {
+      state.user = payload;
+    },
+  },
   getters: {
     user(state) {
       return state.user;

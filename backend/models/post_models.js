@@ -75,13 +75,13 @@ class Post {
     return await db.execute(sql);
   }
 
-  async delete(id) {
+  static delete(id) {
     let sql = `
     DELETE FROM posts
     WHERE id = '${id}';
     `;
 
-    return await db.execute(sql);
+    return db.execute(sql);
   }
 }
 

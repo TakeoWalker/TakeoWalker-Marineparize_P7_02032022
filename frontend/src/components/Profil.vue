@@ -15,11 +15,11 @@
         <button type="button" @click="deleteProfil">Supprimer votre profil</button>
     </div>
 
-    <div v-show="modify == true">
+    <div v-show="modify == true" class="profilToChange">
         <div v-if="userProfil.icon_url !== '../assets/defaultIcon.png'">
             <img :src="userProfil.icon_url" alt="icon" class="iconUser"/>
         </div>
-        <div v-else>
+        <div v-else class>
             <img src="../assets/defaultIcon.png" alt="default icon" class="iconUser"/>
         </div>
 
@@ -27,8 +27,10 @@
         <div class="preview">
             <p>{{ messageImage }}</p>
         </div>
-        <input type="text" v-model="userProfil.username" />
-        <input type="email" v-model="userProfil.email" />
+        <div class="infoTochange">
+            <input type="text" v-model="userProfil.username" />
+            <input type="email" v-model="userProfil.email" />
+        </div>
         <button type="button" @click="updateProfil">Mettre à jour</button>
     </div>
 </template>
@@ -60,6 +62,9 @@ export default {
             const result = await axios.get("http://localhost:3000/auth/" + this.$route.params.id)
             this.userProfil = result.data[0];
             this.userProfil.created_on = moment(this.userProfil.created_on).format('DD-MM-YYYY hh:mm:ss');
+            if(this.user.id === this.userProfil.id){
+                this.$store.commit("setUser", this.userProfil);
+            }
         },
         modifyProfil(){
             this.modify = !this.modify;
@@ -115,12 +120,51 @@ export default {
         border-radius: 5px;
         cursor: pointer;
     }
+    .profilToChange button{
+        background-color: beige;
+        border: 1px solid beige;
+        padding: 5px;
+        margin: 10px;
+        border-radius: 5px;
+        cursor: pointer;
+    }
     .username{
         color: lightcoral;
         font-size: 30px;
     }
     #icon{
-        border: 1px solid lightcoral;
+        border: 1px solid beige;
         padding: 10px;
+        color: beige;
+    }
+    .iconUser{
+        width: 150px;
+    }
+    .infoTochange input{
+        margin-right: 20px;
+        margin-bottom: 20px;
+        width: 200px;
+        height: 20px;
+        background-color: beige;
+        border: 1px solid beige;
+        padding-left: 10px;
+    }
+    .profilToChange{
+        background-color: lightcoral;
+        padding: 20px;
+        width: 50%;
+        margin: 25px auto;
+        border-radius: 25px;
+    }
+    @media screen and (max-width: 750px){
+        .profilToChange{ 
+            width: auto;
+            margin-bottom: 0;
+            padding-bottom: 100px;
+            border-radius: 25px 25px 0 0;
+        }
+        .actionsProfil{
+            margin-bottom: 100px;
+    }
     }
 </style>

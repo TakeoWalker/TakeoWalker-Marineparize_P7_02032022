@@ -69,6 +69,15 @@ export default {
         padding: 20px;
         border-radius: 2%;
     }
+    @media screen and (max-width: 750px){
+        .addNewContent{
+            width: auto;
+        }
+        #imageClass {
+            padding-right: 0;
+            width: auto;
+        }
+    }
     .addForm input{
         width: 92%;
         height: 40px;
